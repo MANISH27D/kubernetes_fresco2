@@ -1,0 +1,14 @@
+1. kubectl create --namespace dev
+2. openssl genrsa -out emp.key
+3. openssl req -new -key emp.key -out emp.csr -subj "/name=emp/group=dev"
+4. openssl x509 -req -in emp.csr -CA /.minikube/ca.crt -CAkey \
+   /.minikube/ca.key -cacreateserial -out emp.crt
+
+5.kubectl config set-context dev-ctx --cluster=minikube --namespace=dev --user=emp
+
+6. kubectl config set-credentials emp --client-certificate=emp.crt --client-key=emp.key
+
+7. kubectl create role emp-role --verb=get,list \ --resource=pods,deployments --namespace=dev
+
+8. kubectl create rolebinding emp-bind --clusterrole=emp-role --user=emp --namespace=dev
+
